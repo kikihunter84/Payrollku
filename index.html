@@ -283,7 +283,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 <div id="loginPage" class="login-page">
   <div class="login-card">
     <h2 style="text-align: center; border: none; color: var(--text); font-size: 24px; margin-bottom: 5px;"><i class="fa-solid fa-users"></i> PayrollKu</h2>
-    <p style="text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Pilih Akses Masuk (Full Cloud)</p>
+    <p style="text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Proteksi Keamanan Sistem Terpusat</p>
     
     <div class="field">
       <label>Masuk Sebagai</label>
@@ -294,16 +294,16 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
     </div>
 
     <div id="adminFormGroup" style="margin-top: 12px;">
-      <div class="field"><label>Username Admin</label><input id="loginUser" value="admin"></div>
-      <div class="field" style="margin-top:10px"><label>Password Admin</label><input id="loginPass" type="password" value="1234"></div>
+      <div class="field"><label>Username Admin</label><input id="loginUser" placeholder="Masukkan username"></div>
+      <div class="field" style="margin-top:10px"><label>Password Admin</label><input id="loginPass" type="password" placeholder="Masukkan password"></div>
     </div>
 
     <div id="empFormGroup" class="hide" style="margin-top: 12px;">
       <div class="field"><label>Pilih Nama Member</label><select id="loginEmpSelect"></select></div>
-      <div class="field" style="margin-top:10px"><label>PIN / Sandi Member</label><input id="loginEmpPass" type="password" value="1234"></div>
+      <div class="field" style="margin-top:10px"><label>PIN Keamanan Member</label><input id="loginEmpPass" type="password" placeholder="Masukkan PIN 4 digit"></div>
     </div>
 
-    <button class="btn-primary" style="width:100%; margin-top:20px" onclick="login()">Log In</button>
+    <button class="btn-primary" style="width:100%; margin-top:20px" onclick="login()"><i class="fa-solid fa-shield-halved"></i> Verifikasi & Log In</button>
     <p id="loginMsg" style="text-align: center; color: var(--red); margin-top: 10px; font-size: 13px;"></p>
   </div>
 </div>
@@ -339,8 +339,8 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
       <button id="nGaji" class="admin-menu" onclick="show('gaji')"><i class="fa-solid fa-circle-dollar-to-slot"></i><span>Gaji</span></button>
       <button id="nPotongan" class="admin-menu" onclick="show('potongan')"><i class="fa-solid fa-money-bill-transfer"></i><span>Potongan</span></button>
       <button id="nSlip" onclick="show('slip')"><i class="fa-solid fa-file-invoice"></i><span>Slip Gaji</span></button>
-      <button id="nArsip" onclick="show('arsip')"><i class="fa-solid fa-box-archive"></i><span>Arsip</span></button>
-      <button onclick="location.reload()"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Keluar</span></button>
+      <button id="nArsip" class="admin-menu" onclick="show('arsip')"><i class="fa-solid fa-box-archive"></i><span>Arsip</span></button>
+      <button onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Keluar</span></button>
     </aside>
 
     <main class="content" onclick="closeSidebarIfOpen(event)">
@@ -694,15 +694,15 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
       hideLoading();
       document.getElementById('cloudStatus').textContent = '🟢 Terhubung';
       updateEmployeeSelectors();
-      loadActiveEmpData();
-      renderOT();
-      calculate();
-      updateArchiveSelector();
+      
+      // Cek Sesi Keamanan yang Tersimpan di Browser
+      checkExistingSession();
     } catch (e) {
       console.error("Gagal ambil data cloud: ", e);
       hideLoading();
       document.getElementById('cloudStatus').textContent = '⚠️ Offline';
       showToast('Gagal memuat data dari Cloud (Mode Offline)', 'error');
+      checkExistingSession();
     }
   }
 
@@ -744,9 +744,100 @@ document.addEventListener('DOMContentLoaded', function() {
     if(icon) icon.className = 'fa-solid fa-sun';
     if(text) text.textContent = 'Terang';
   }
-  updateEmployeeSelectors();
-  switchLoginRole('admin');
 });
+
+// SISTEM PROTEKSI SESI & KEAMANAN
+function checkExistingSession() {
+  let savedRole = sessionStorage.getItem('payrollku_role');
+  let savedNik = sessionStorage.getItem('payrollku_nik');
+
+  if(savedRole) {
+    window.data.currentUserRole = savedRole;
+    if(savedNik) window.data.activeNik = savedNik;
+    finalizeLogin(true); // Masuk otomatis tanpa memunculkan pesan toast berlebih
+  } else {
+    el('loginPage').classList.remove('hide');
+    el('app').classList.add('hide');
+  }
+  updateEmployeeSelectors();
+}
+
+function login(){
+  let role = el('loginRole').value;
+  if(role === 'admin') {
+    let u = el('loginUser').value.trim();
+    let p = el('loginPass').value;
+    let adm = window.data.admin || { username: 'admin', password: '1234' };
+    
+    if(!u || !p) {
+      el('loginMsg').textContent = 'Username dan Password wajib diisi!';
+      showToast('Form login tidak boleh kosong!', 'error');
+      return;
+    }
+
+    if(u === adm.username && p === adm.password) {
+      window.data.currentUserRole = 'admin';
+      sessionStorage.setItem('payrollku_role', 'admin');
+      finalizeLogin(false);
+    } else {
+      el('loginMsg').textContent = 'Username atau Password Admin Salah!';
+      showToast('Kredensial Admin Salah!', 'error');
+    }
+  } else {
+    let nik = el('loginEmpSelect').value;
+    let pin = el('loginEmpPass').value;
+    let emp = window.data.employees.find(x => x.nik === nik);
+
+    if(!pin) {
+      el('loginMsg').textContent = 'PIN Keamanan wajib diisi!';
+      showToast('PIN tidak boleh kosong!', 'error');
+      return;
+    }
+
+    if(emp && pin === (emp.pin || '1234')) {
+      window.data.currentUserRole = 'employee';
+      window.data.activeNik = nik;
+      sessionStorage.setItem('payrollku_role', 'employee');
+      sessionStorage.setItem('payrollku_nik', nik);
+      finalizeLogin(false);
+    } else {
+      el('loginMsg').textContent = 'PIN Member Salah!';
+      showToast('PIN Member Salah!', 'error');
+    }
+  }
+}
+
+function finalizeLogin(isRestored) {
+  el('loginPage').classList.add('hide');
+  el('app').classList.remove('hide');
+  
+  if(window.data.currentUserRole === 'admin') {
+    document.querySelectorAll('.admin-menu').forEach(i => i.style.display = 'flex');
+    el('roleBadge').textContent = 'ADMIN';
+    el('topActiveEmpContainer').style.display = 'inline-flex';
+  } else {
+    document.querySelectorAll('.admin-menu').forEach(i => i.style.display = 'none');
+    el('roleBadge').textContent = 'MEMBER';
+    el('topActiveEmpContainer').style.display = 'none';
+  }
+
+  updateEmployeeSelectors();
+  loadActiveEmpData();
+  renderOT();
+  calculate();
+  updateArchiveSelector();
+  
+  if(!isRestored) {
+    showToast('Berhasil masuk ke sistem!', 'success');
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('payrollku_role');
+  sessionStorage.removeItem('payrollku_nik');
+  showToast('Sesi diakhiri, Anda telah keluar.', 'info');
+  setTimeout(() => { location.reload(); }, 600);
+}
 
 // Fungsi Bantuan untuk Notifikasi Toast & Loading
 function showToast(message, type = 'success') {
@@ -903,56 +994,14 @@ function saveBulkSalaryAndDeductions() {
   showToast('Pengaturan gaji, tunjangan & potongan massal tersimpan!', 'success');
 }
 
-function login(){
-  let role = el('loginRole').value;
-  if(role === 'admin') {
-    let u = el('loginUser').value.trim();
-    let p = el('loginPass').value;
-    let adm = window.data.admin || { username: 'admin', password: '1234' };
-    if(u === adm.username && p === adm.password) {
-      window.data.currentUserRole = 'admin';
-      finalizeLogin();
-    } else {
-      el('loginMsg').textContent = 'Login Admin Salah!';
-      showToast('Login Admin Salah!', 'error');
-    }
-  } else {
-    let nik = el('loginEmpSelect').value;
-    let pin = el('loginEmpPass').value;
-    let emp = window.data.employees.find(x => x.nik === nik);
-    if(emp && pin === (emp.pin || '1234')) {
-      window.data.currentUserRole = 'employee';
-      window.data.activeNik = nik;
-      finalizeLogin();
-    } else {
-      el('loginMsg').textContent = 'PIN Member Salah!';
-      showToast('PIN Member Salah!', 'error');
-    }
-  }
-}
-
-function finalizeLogin() {
-  window.saveToCloud();
-  el('loginPage').classList.add('hide');
-  el('app').classList.remove('hide');
-  if(window.data.currentUserRole === 'admin') {
-    document.querySelectorAll('.admin-menu').forEach(i => i.style.display = 'flex');
-    el('roleBadge').textContent = 'ADMIN';
-    el('topActiveEmpContainer').style.display = 'inline-flex';
-  } else {
-    document.querySelectorAll('.admin-menu').forEach(i => i.style.display = 'none');
-    el('roleBadge').textContent = 'MEMBER';
-    el('topActiveEmpContainer').style.display = 'none';
-  }
-  updateEmployeeSelectors();
-  loadActiveEmpData();
-  renderOT();
-  calculate();
-  updateArchiveSelector();
-  showToast('Berhasil masuk ke sistem!', 'success');
-}
-
 function show(id){
+ // Proteksi menu khusus admin
+ const adminOnlyMenus = ['karyawan', 'setting', 'gaji', 'potongan'];
+ if(adminOnlyMenus.includes(id) && window.data.currentUserRole !== 'admin') {
+   showToast('Akses ditolak! Menu ini khusus Administrator.', 'error');
+   return;
+ }
+
  document.querySelectorAll('section').forEach(x => x.classList.add('hide'));
  el(id).classList.remove('hide');
  document.querySelectorAll('.sidebar button').forEach(x => x.classList.remove('active'));
