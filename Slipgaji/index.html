@@ -81,8 +81,48 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 .net-pay-box { border: 2px solid var(--green); border-radius: 6px; padding: 12px; background: #fff; margin-bottom: 16px; }
 .net-pay-top { display: flex; justify-content: space-between; font-weight: bold; color: var(--green); font-size: 20px; }
 
-.login-page { min-height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--primary); padding: 20px; }
-.login-card { width: 100%; max-width: 380px; background: #fff; padding: 32px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+/* STYLING HALAMAN LOGIN BARU YANG MODERN */
+.login-page { 
+  min-height: 100vh; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  background: linear-gradient(135deg, #041e42 0%, #0a2a66 100%); 
+  padding: 20px; 
+}
+.login-card { 
+  width: 100%; 
+  max-width: 380px; 
+  background: #ffffff; 
+  padding: 32px; 
+  border-radius: 16px; 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); 
+  animation: fadeInLogin 0.5s ease-in-out;
+}
+.login-card select, 
+.login-card input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 4px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #f9f9f9;
+  transition: all 0.3s ease;
+}
+.login-card select:focus, 
+.login-card input:focus {
+  border-color: #1a73e8;
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+}
+
+@keyframes fadeInLogin {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .emp-select-top { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 4px 8px; border-radius: 6px; font-size: 12px; outline: none; max-width: 150px; }
 .emp-select-top option { color: #000; }
 
@@ -341,7 +381,6 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
       if (snap.exists()) {
         window.data = snap.data();
         if(!window.data.archives) window.data.archives = {};
-        // Pastikan properti tmkt dan tLain ada untuk mencegah error data lama
         window.data.employees.forEach(emp => {
           if(emp.tmkt === undefined) emp.tmkt = 0;
           if(emp.tLain === undefined) emp.tLain = 0;
