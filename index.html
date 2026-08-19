@@ -52,7 +52,7 @@ h2 { margin: 0 0 16px; font-weight: 600; font-size: 18px; color: var(--primary);
 .field { margin-bottom: 12px; }
 .field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
 .field input, .field select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
-.btn-primary { background: var(--blue); color: #fff; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.btn-primary { background: var(--blue); color: #fff; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; }
 .btn-outline { background: transparent; color: var(--text); border: 1px solid #ccc; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
 .btn-success { background: var(--green); color: #fff; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
 .row-btn { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
@@ -104,11 +104,15 @@ h2 { margin: 0 0 16px; font-weight: 600; font-size: 18px; color: var(--primary);
       <option value="admin">Admin</option>
       <option value="employee">Member</option>
     </select>
-    <div id="adminFormGroup"><input id="loginUser" value="admin" style="width:100%; padding:10px; margin-bottom:10px;">
-    <input id="loginPass" type="password" value="1234" style="width:100%; padding:10px; margin-bottom:10px;"></div>
-    <div id="empFormGroup" class="hide"><select id="loginEmpSelect" style="width:100%; padding:10px; margin-bottom:10px;"></select>
-    <input id="loginEmpPass" type="password" value="1234" style="width:100%; padding:10px; margin-bottom:10px;"></div>
-    <button class="btn-primary" style="width:100%" onclick="login()">Log In</button>
+    <div id="adminFormGroup">
+      <input id="loginUser" value="admin" placeholder="Username" style="width:100%; padding:10px; margin-bottom:10px;">
+      <input id="loginPass" type="password" value="1234" placeholder="Password" style="width:100%; padding:10px; margin-bottom:10px;">
+    </div>
+    <div id="empFormGroup" class="hide">
+      <select id="loginEmpSelect" style="width:100%; padding:10px; margin-bottom:10px;"></select>
+      <input id="loginEmpPass" type="password" value="1234" placeholder="Password" style="width:100%; padding:10px; margin-bottom:10px;">
+    </div>
+    <button class="btn-primary" onclick="login()">Log In</button>
   </div>
 </div>
 
@@ -241,9 +245,24 @@ h2 { margin: 0 0 16px; font-weight: 600; font-size: 18px; color: var(--primary);
   }
 
   function login(){
-    document.getElementById('loginPage').classList.add('hide');
-    document.getElementById('app').classList.remove('hide');
-    showToast('Login Berhasil!');
+    let role = document.getElementById('loginRole').value;
+    
+    if (role === 'admin') {
+      let user = document.getElementById('loginUser').value;
+      let pass = document.getElementById('loginPass').value;
+      
+      if (user === 'admin' && pass === '1234') {
+        document.getElementById('loginPage').classList.add('hide');
+        document.getElementById('app').classList.remove('hide');
+        showToast('Login Admin Berhasil!');
+      } else {
+        showToast('Username atau Password Admin salah!');
+      }
+    } else {
+      document.getElementById('loginPage').classList.add('hide');
+      document.getElementById('app').classList.remove('hide');
+      showToast('Login Member Berhasil!');
+    }
   }
 </script>
 </body>
