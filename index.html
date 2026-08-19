@@ -52,8 +52,34 @@ h2 { margin: 0 0 16px; font-weight: 600; font-size: 18px; color: var(--primary);
 .field { margin-bottom: 12px; }
 .field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
 .field input, .field select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
-.btn-primary { background: var(--blue); color: #fff; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+.btn-primary { background: var(--blue); color: #fff; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.btn-outline { background: transparent; color: var(--text); border: 1px solid #ccc; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+.btn-success { background: var(--green); color: #fff; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
 .row-btn { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+
+/* Toast Notification */
+#toast {
+  visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff;
+  text-align: center; border-radius: 8px; padding: 12px; position: fixed; z-index: 2000;
+  left: 50%; bottom: 100px; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+#toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+@keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 100px; opacity: 1;} }
+@keyframes fadeout { from {bottom: 100px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+/* Spinner Loading */
+.spinner {
+  display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%; border-top-color: #fff; animation: spin 0.8s linear infinite; margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Dark Mode Classes */
+.dark-mode { --bg: #121212; --surface: #1e1e1e; --text: #e0e0e0; --border: #333; --primary: #1a73e8; }
+.dark-mode .card, .dark-mode .sidebar { background: var(--surface); border: 1px solid var(--border); }
+.dark-mode input, .dark-mode select { background: #2c2c2c; color: white; border: 1px solid #444; }
+
+.search-box { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; }
 
 /* Responsive Adjustments */
 @media(max-width: 768px) {
@@ -68,6 +94,8 @@ h2 { margin: 0 0 16px; font-weight: 600; font-size: 18px; color: var(--primary);
 </style>
 </head>
 <body>
+
+<div id="toast">Notifikasi</div>
 
 <div id="loginPage" class="login-page" style="min-height: 100vh; display: flex; justify-content: center; align-items: center; background: #041e42; padding: 20px;">
   <div style="width: 100%; max-width: 380px; background: #fff; padding: 32px; border-radius: 14px;">
@@ -91,14 +119,56 @@ h2 { margin: 0 0 16px; font-weight: 600; font-size: 18px; color: var(--primary);
   <div class="main-wrapper">
     <aside id="sidebar" class="sidebar">
       <button id="nDashboard" onclick="show('dashboard')" class="active"><i class="fa-solid fa-house"></i><span>Home</span></button>
+      <button id="nKaryawan" class="admin-menu" onclick="show('karyawan')"><i class="fa-regular fa-user"></i><span>Member</span></button>
       <button id="nLembur" onclick="show('lembur')"><i class="fa-regular fa-clock"></i><span>Lembur</span></button>
+      <button id="nSetting" class="admin-menu" onclick="show('setting')"><i class="fa-regular fa-calendar-alt"></i><span>Setting</span></button>
+      <button id="nGaji" class="admin-menu" onclick="show('gaji')"><i class="fa-solid fa-circle-dollar-to-slot"></i><span>Gaji</span></button>
       <button id="nSlip" onclick="show('slip')"><i class="fa-solid fa-file-invoice"></i><span>Slip</span></button>
       <button id="nArsip" onclick="show('arsip')"><i class="fa-solid fa-box-archive"></i><span>Arsip</span></button>
     </aside>
     <main class="content">
       <div class="content-wrap">
-        <section id="dashboard"><div class="card"><h2>Dashboard</h2><p>Sistem Cloud PayrollKu aktif.</p></div></section>
+        <section id="dashboard">
+          <div class="card" style="background: var(--primary); color: white;">
+            <h2 style="color: white; border: none;">Ringkasan Gaji</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <p style="font-size:12px; opacity:0.8; margin:0;">Total Gaji Aktif</p>
+                <h3 id="totalGajiDisplay" style="margin:5px 0 0 0;">Rp 0</h3>
+              </div>
+              <i class="fa-solid fa-wallet" style="font-size:30px; opacity:0.3;"></i>
+            </div>
+          </div>
+          <div class="card"><h2>Dashboard</h2><p>Sistem Cloud PayrollKu aktif.</p></div>
+        </section>
+
+        <section id="karyawan" class="hide admin-section">
+          <div class="card">
+            <h2>Manajemen Member</h2>
+            <input type="text" id="searchMember" class="search-box" placeholder="Cari Member..." onkeyup="filterEmployees()">
+            <div class="field"><label>Pilih Member:</label><select id="empListSelect" onchange="selectEmployeeForEdit(this.value)"></select></div>
+            <div class="grid">
+              <div class="field"><label>Nama</label><input id="nama"></div>
+              <div class="field"><label>NIK</label><input id="nik"></div>
+              <div class="field"><label>Gaji Pokok</label><input id="gajiPokok" type="number"></div>
+            </div>
+            <div class="row-btn"><button class="btn-primary" onclick="saveEmployee()">Simpan Member</button></div>
+          </div>
+        </section>
+
         <section id="lembur" class="hide"><div class="card"><h2>Input Lembur</h2><div class="tablewrap"><table class="gen-table" id="otBody"></table></div></div></section>
+        
+        <section id="setting" class="hide admin-section">
+          <div class="card">
+            <h2>Pengaturan Sistem</h2>
+            <div class="row-btn">
+              <button class="btn-outline" onclick="toggleDarkMode()">Ganti Tema (Dark/Light)</button>
+              <button class="btn-success" onclick="exportToCSV()">Export Excel (CSV)</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="gaji" class="hide admin-section"><div class="card"><h2>Gaji</h2></div></section>
         <section id="slip" class="hide"><div class="card"><div id="slipBox"></div></div></section>
         <section id="arsip" class="hide"><div class="card"><h2>Arsip Member</h2><select id="archiveSelect" onchange="loadArchive(this.value)"></select><div id="archiveBox"></div></div></section>
       </div>
@@ -106,9 +176,75 @@ h2 { margin: 0 0 16px; font-weight: 600; font-size: 18px; color: var(--primary);
   </div>
 </div>
 
-<script type="module">
-  // [Kode script Firebase dan logika fungsi Anda tetap di sini...]
-  // (Pastikan struktur fungsi archiveCurrentPeriod dan updateArchiveSelector tetap sama agar filter per member bekerja)
+<script>
+  function showToast(message) {
+    let x = document.getElementById("toast");
+    x.textContent = message;
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  }
+
+  function setBtnLoading(btn, isLoading, originalText) {
+    if (isLoading) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Memproses...';
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  }
+
+  function filterEmployees() {
+    let query = document.getElementById('searchMember').value.toLowerCase();
+    let options = document.getElementById('empListSelect').options;
+    for (let i = 0; i < options.length; i++) {
+      let txt = options[i].text.toLowerCase();
+      options[i].style.display = txt.includes(query) ? "" : "none";
+    }
+  }
+
+  function exportToCSV() {
+    let csv = "Nama,NIK,Gaji Pokok\n";
+    if(window.data && window.data.employees) {
+      window.data.employees.forEach(e => {
+        csv += `${e.nama},${e.nik},${e.gajiPokok}\n`;
+      });
+    }
+    let blob = new Blob([csv], { type: 'text/csv' });
+    let url = window.URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url; a.download = "Rekap_Gaji.csv"; a.click();
+    showToast('Data berhasil di-export ke Excel!');
+  }
+
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+  }
+
+  function show(id){
+    document.querySelectorAll('section').forEach(x => x.classList.add('hide'));
+    document.getElementById(id).classList.remove('hide');
+    document.querySelectorAll('.sidebar button').forEach(x => x.classList.remove('active'));
+    let btn = document.getElementById('n' + id.charAt(0).toUpperCase() + id.slice(1));
+    if(btn) btn.classList.add('active');
+  }
+
+  function switchLoginRole(role) {
+    if(role === 'admin') {
+      document.getElementById('adminFormGroup').classList.remove('hide');
+      document.getElementById('empFormGroup').classList.add('hide');
+    } else {
+      document.getElementById('adminFormGroup').classList.add('hide');
+      document.getElementById('empFormGroup').classList.remove('hide');
+    }
+  }
+
+  function login(){
+    document.getElementById('loginPage').classList.add('hide');
+    document.getElementById('app').classList.remove('hide');
+    showToast('Login Berhasil!');
+  }
 </script>
 </body>
 </html>

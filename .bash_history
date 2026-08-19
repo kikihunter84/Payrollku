@@ -12,3 +12,6 @@ cd Slipgaji
 git add .
 git commit -m "Update UI Bottom Nav dan Arsip Per Member"
 git push -u origin main
+git add .
+git commit -m "Update final index root"
+git push -u origin main
