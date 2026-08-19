@@ -18,10 +18,30 @@
   --text: #333333;
   --text-muted: #666666;
   --border: #e0e0e0;
+  --table-header: #f9f9f9;
+  --input-bg: #ffffff;
 }
+
+/* DARK MODE VARIABLES */
+[data-theme="dark"] {
+  --primary: #1a73e8;
+  --blue: #4285f4;
+  --blue-light: #0d3b66;
+  --green: #2ecc71;
+  --red-dark: #e74c3c;
+  --red: #ff5252;
+  --bg: #121824;
+  --surface: #1e2530;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --border: #2d3748;
+  --table-header: #161c24;
+  --input-bg: #161c24;
+}
+
 * { box-sizing: border-box; }
-body { margin: 0; font-family: "Segoe UI", Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; overflow: hidden; }
-button, input, select { font: inherit; }
+body { margin: 0; font-family: "Segoe UI", Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; overflow: hidden; transition: background 0.3s ease, color 0.3s ease; }
+button, input, select { font: inherit; color: inherit; }
 .hide { display: none !important; }
 
 .app-container { display: flex; height: 100vh; flex-direction: column; }
@@ -30,7 +50,7 @@ button, input, select { font: inherit; }
 .topbar-right { display: flex; align-items: center; gap: 8px; font-size: 13px; flex-wrap: wrap; }
 .main-wrapper { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-.sidebar { width: 100px; background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 16px 0; overflow-y: auto; z-index: 15; transition: left 0.3s ease; }
+.sidebar { width: 100px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 16px 0; overflow-y: auto; z-index: 15; transition: left 0.3s ease, background 0.3s ease; }
 .sidebar button { 
   background: transparent; border: none; color: var(--text-muted); 
   display: flex; flex-direction: column; align-items: center; justify-content: center; 
@@ -38,19 +58,19 @@ button, input, select { font: inherit; }
   font-size: 11px; margin-bottom: 4px; width: 90%; margin-left: 5%; border-radius: 8px;
 }
 .sidebar button i { font-size: 18px; }
-.sidebar button:hover { background: #f5f5f5; color: var(--blue); }
+.sidebar button:hover { background: var(--border); color: var(--blue); }
 .sidebar button.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
 
 .content { flex: 1; overflow-y: auto; padding: 20px; background: var(--bg); }
 .content-wrap { max-width: 950px; margin: 0 auto; padding-bottom: 40px; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s ease, border 0.3s ease; }
 h2 { margin: 0 0 16px; font-weight: 600; font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
 .field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-.field input, .field select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+.field input, .field select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--input-bg); color: var(--text); }
 .btn-primary { background: var(--blue); color: #fff; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
-.btn-outline { background: transparent; color: var(--text); border: 1px solid #ccc; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
 .btn-danger { background: var(--red); color: #fff; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
 .btn-success { background: var(--green); color: #fff; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
 .row-btn { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
@@ -58,19 +78,19 @@ h2 { margin: 0 0 16px; font-weight: 600; font-size: 18px; border-bottom: 1px sol
 .tablewrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; margin-top: 10px; }
 table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 .gen-table th, .gen-table td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; font-size: 13px; }
-.gen-table th { background: #f9f9f9; text-transform: uppercase; font-size: 12px; color: var(--text-muted); }
+.gen-table th { background: var(--table-header); text-transform: uppercase; font-size: 12px; color: var(--text-muted); }
 
 /* SLIP GAJI STYLE PROFESIONAL */
-.slip-container { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.slip-container { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 .slip-brand { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--primary); padding-bottom: 12px; margin-bottom: 16px; }
-.slip-brand-left h3 { margin: 0 0 2px 0; color: var(--primary); font-size: 16px; font-weight: 700; }
+.slip-brand-left h3 { margin: 0 0 2px 0; color: var(--text); font-size: 16px; font-weight: 700; }
 .slip-brand-right { text-align: right; }
 .slip-brand-right span { font-size: 12px; background: var(--blue-light); color: var(--blue); padding: 4px 10px; border-radius: 6px; font-weight: 600; }
 
 .info-grid-pro { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 20px; font-size: 13px; }
 .info-item { display: flex; flex-direction: column; gap: 2px; }
 .info-item span:first-child { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
-.info-item span:last-child { color: var(--primary); font-weight: 700; }
+.info-item span:last-child { color: var(--text); font-weight: 700; }
 
 .slip-table-container { overflow-x: auto; width: 100%; margin-bottom: 16px; }
 .slip-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid var(--border); min-width: 500px; border-radius: 6px; overflow: hidden; }
@@ -82,8 +102,8 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 .bg-income { background: var(--primary); }
 .bg-deduct { background: var(--red-dark); }
 .row-shift { color: var(--green); font-weight: 600; }
-.row-total-income { background: #f8fafc; color: var(--blue); font-weight: bold; }
-.row-total-deduct { background: #fff5f5; color: var(--red); font-weight: bold; }
+.row-total-income { background: var(--table-header); color: var(--blue); font-weight: bold; }
+.row-total-deduct { background: var(--table-header); color: var(--red); font-weight: bold; }
 
 .net-pay-box { background: linear-gradient(135deg, #1e8e3e 0%, #157331 100%); color: #fff; border-radius: 8px; padding: 18px 20px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(30, 142, 62, 0.2); }
 .net-pay-box span:first-child { font-size: 14px; font-weight: 600; letter-spacing: 0.5px; opacity: 0.9; }
@@ -103,7 +123,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
   pointer-events: none;
 }
 .toast {
-  background: #ffffff;
+  background: var(--surface);
   color: var(--text);
   padding: 14px 20px;
   border-radius: 12px;
@@ -117,6 +137,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
   pointer-events: auto;
   animation: slideInToast 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), fadeOutToast 0.3s ease-in 2.7s forwards;
   max-width: 320px;
+  border: 1px solid var(--border);
 }
 .toast.success { border-left-color: var(--green); }
 .toast.success i { color: var(--green); font-size: 18px; }
@@ -137,7 +158,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 #loadingOverlay {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(4, 30, 66, 0.6);
+  background: rgba(4, 30, 66, 0.7);
   backdrop-filter: blur(4px);
   z-index: 99999;
   display: flex;
@@ -166,6 +187,24 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
   letter-spacing: 0.5px;
 }
 
+/* TOMBOL TOGGLE THEME */
+.theme-toggle-btn {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s;
+}
+.theme-toggle-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
 /* STYLING HALAMAN LOGIN BARU YANG MODERN */
 .login-page { 
   min-height: 100vh; 
@@ -178,27 +217,29 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 .login-card { 
   width: 100%; 
   max-width: 380px; 
-  background: #ffffff; 
+  background: var(--surface); 
+  color: var(--text);
   padding: 32px; 
   border-radius: 16px; 
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); 
   animation: fadeInLogin 0.5s ease-in-out;
+  border: 1px solid var(--border);
 }
 .login-card select, 
 .login-card input {
   width: 100%;
   padding: 10px 12px;
   margin-top: 4px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 14px;
-  background: #f9f9f9;
+  background: var(--input-bg);
+  color: var(--text);
   transition: all 0.3s ease;
 }
 .login-card select:focus, 
 .login-card input:focus {
-  border-color: #1a73e8;
-  background: #fff;
+  border-color: var(--blue);
   outline: none;
   box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
 }
@@ -214,11 +255,11 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 #cloudStatus { font-size: 10px; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px; color: #ffd700; white-space: nowrap; }
 
 @media print {
-  body { background: #fff; overflow: auto; }
+  body { background: #fff !important; color: #000 !important; overflow: auto; }
   .no-print, .sidebar, .topbar, .row-btn { display: none !important; }
-  .content { padding: 0; background: #fff; }
+  .content { padding: 0; background: #fff !important; }
   .content-wrap { max-width: 100%; margin: 0; }
-  .card, .slip-container { border: none; box-shadow: none; padding: 0; margin: 0; }
+  .card, .slip-container { border: none; box-shadow: none; padding: 0; margin: 0; background: #fff !important; color: #000 !important; }
 }
 
 @media(max-width: 768px) {
@@ -241,7 +282,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 
 <div id="loginPage" class="login-page">
   <div class="login-card">
-    <h2 style="text-align: center; border: none; color: var(--primary); font-size: 24px; margin-bottom: 5px;"><i class="fa-solid fa-users"></i> PayrollKu</h2>
+    <h2 style="text-align: center; border: none; color: var(--text); font-size: 24px; margin-bottom: 5px;"><i class="fa-solid fa-users"></i> PayrollKu</h2>
     <p style="text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Pilih Akses Masuk (Full Cloud)</p>
     
     <div class="field">
@@ -263,7 +304,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
     </div>
 
     <button class="btn-primary" style="width:100%; margin-top:20px" onclick="login()">Log In</button>
-    <p id="loginMsg" style="text-align: center; color: red; margin-top: 10px; font-size: 13px;"></p>
+    <p id="loginMsg" style="text-align: center; color: var(--red); margin-top: 10px; font-size: 13px;"></p>
   </div>
 </div>
 
@@ -278,6 +319,9 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
       <span id="cloudStatus">Menghubungkan...</span>
     </div>
     <div class="topbar-right">
+      <button class="theme-toggle-btn" onclick="toggleDarkMode()" title="Ubah Tema Terang/Gelap">
+        <i id="themeIcon" class="fa-solid fa-moon"></i> <span id="themeText">Gelap</span>
+      </button>
       <span id="topActiveEmpContainer" style="display:none; align-items:center; gap:4px;">
         <span style="font-size: 11px; opacity: 0.8;">Member:</span>
         <select id="topEmpSelect" class="emp-select-top" onchange="switchActiveEmployee(this.value)"></select>
@@ -315,7 +359,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
             </div>
             <div class="card" style="margin-bottom: 0; border-left: 4px solid var(--green);">
               <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">PERIODE AKTIF</div>
-              <div style="font-size: 15px; font-weight: bold; color: var(--primary); margin-top: 6px;"><i class="fa-regular fa-calendar"></i> 21 Jul - 20 Agu</div>
+              <div style="font-size: 15px; font-weight: bold; color: var(--text); margin-top: 6px;"><i class="fa-regular fa-calendar"></i> 21 Jul - 20 Agu</div>
             </div>
           </div>
 
@@ -336,8 +380,8 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
             </div>
 
             <div class="field" style="margin-bottom: 20px; background: var(--bg); padding: 14px; border-radius: 8px; border: 1px solid var(--border);">
-              <label style="color: var(--primary); font-size: 13px; margin-bottom: 8px;"><i class="fa-solid fa-user-gear"></i> Pilih Member untuk Diedit:</label>
-              <select id="empListSelect" onchange="selectEmployeeForEdit(this.value)" style="font-weight: bold; color: var(--blue); padding: 12px; background: #fff; font-size: 14px;"></select>
+              <label style="color: var(--text); font-size: 13px; margin-bottom: 8px;"><i class="fa-solid fa-user-gear"></i> Pilih Member untuk Diedit:</label>
+              <select id="empListSelect" onchange="selectEmployeeForEdit(this.value)" style="font-weight: bold; color: var(--blue); padding: 12px; background: var(--input-bg); font-size: 14px;"></select>
             </div>
 
             <div class="grid" style="gap: 16px;">
@@ -373,32 +417,32 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
           </div>
 
           <div class="card">
-            <h3 style="font-size: 15px; color: var(--primary); margin-top: 0; margin-bottom: 12px;"><i class="fa-regular fa-calendar-days" style="color: var(--blue);"></i> Rentang Periode Gaji</h3>
+            <h3 style="font-size: 15px; color: var(--text); margin-top: 0; margin-bottom: 12px;"><i class="fa-regular fa-calendar-days" style="color: var(--blue);"></i> Rentang Periode Gaji</h3>
             <div class="grid" style="gap: 12px;">
-              <div class="field" style="margin-bottom: 0;"><label>Mulai Tanggal</label><input id="periodStart" type="date" value="2026-07-21" style="background: #fafafa; border-radius: 8px;"></div>
-              <div class="field" style="margin-bottom: 0;"><label>Sampai Tanggal</label><input id="periodEnd" type="date" value="2026-08-20" style="background: #fafafa; border-radius: 8px;"></div>
+              <div class="field" style="margin-bottom: 0;"><label>Mulai Tanggal</label><input id="periodStart" type="date" value="2026-07-21" style="border-radius: 8px;"></div>
+              <div class="field" style="margin-bottom: 0;"><label>Sampai Tanggal</label><input id="periodEnd" type="date" value="2026-08-20" style="border-radius: 8px;"></div>
             </div>
           </div>
 
           <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-              <h3 style="font-size: 15px; color: var(--primary); margin: 0;"><i class="fa-solid fa-table-list" style="color: var(--blue);"></i> Lembar Kerja Harian</h3>
+              <h3 style="font-size: 15px; color: var(--text); margin: 0;"><i class="fa-solid fa-table-list" style="color: var(--blue);"></i> Lembar Kerja Harian</h3>
               <span style="font-size: 12px; color: var(--text-muted);">Isi kolom jam sesuai kehadiran</span>
             </div>
 
             <div class="tablewrap" style="border-radius: 8px; border: 1px solid var(--border);">
-              <table class="gen-table" style="background: #fff;">
+              <table class="gen-table">
                 <thead>
-                  <tr style="background: #f8fafc; color: var(--text-muted);">
-                    <th style="padding: 12px 10px;">Tanggal</th>
-                    <th style="padding: 12px 10px;">Hari</th>
-                    <th style="padding: 12px 10px; text-align: center;">Jam Lembur</th>
-                    <th style="padding: 12px 10px;">L1</th>
-                    <th style="padding: 12px 10px;">L2</th>
-                    <th style="padding: 12px 10px;">L3</th>
-                    <th style="padding: 12px 10px;">L4</th>
-                    <th style="padding: 12px 10px;">UML</th>
-                    <th style="padding: 12px 10px;">Shift</th>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Hari</th>
+                    <th style="text-align: center;">Jam Lembur</th>
+                    <th>L1</th>
+                    <th>L2</th>
+                    <th>L3</th>
+                    <th>L4</th>
+                    <th>UML</th>
+                    <th>Shift</th>
                   </tr>
                 </thead>
                 <tbody id="otBody"></tbody>
@@ -434,14 +478,14 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
               </div>
               <div class="field">
                 <label><i class="fa-regular fa-calendar-days"></i> Shift Minggu Ini</label>
-                <select id="currentShift" style="background: #fff;">
+                <select id="currentShift">
                   <option value="2">Shift 2</option>
                   <option value="1">Shift 1</option>
                 </select>
               </div>
               <div class="field">
                 <label><i class="fa-regular fa-calendar-plus"></i> Shift Depan</label>
-                <select id="nextShift" style="background: #fff;">
+                <select id="nextShift">
                   <option value="1">Shift 1</option>
                   <option value="2">Shift 2</option>
                 </select>
@@ -485,16 +529,16 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
             </div>
 
             <div class="tablewrap" style="border-radius: 8px; border: 1px solid var(--border);">
-              <table class="gen-table" style="background: #fff;">
+              <table class="gen-table">
                 <thead>
-                  <tr style="background: #f8fafc; color: var(--text-muted);">
-                    <th style="padding: 12px 10px;">Nama</th>
-                    <th style="padding: 12px 10px;">Gapok</th>
-                    <th style="padding: 12px 10px;">T.M.K.T</th>
-                    <th style="padding: 12px 10px;">T. Lain</th>
-                    <th style="padding: 12px 10px;">Pinjaman</th>
-                    <th style="padding: 12px 10px;">BPJS</th>
-                    <th style="padding: 12px 10px;">Pot. Lain</th>
+                  <tr>
+                    <th>Nama</th>
+                    <th>Gapok</th>
+                    <th>T.M.K.T</th>
+                    <th>T. Lain</th>
+                    <th>Pinjaman</th>
+                    <th>BPJS</th>
+                    <th>Pot. Lain</th>
                   </tr>
                 </thead>
                 <tbody id="bulkSalaryBody"></tbody>
@@ -515,7 +559,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
             </div>
 
             <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; background: var(--bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
-              <i class="fa-solid fa-circle-exclamation" style="color: var(--red);"></i> Kelola variabel pengurang gaji aktif untuk member: <span id="lblEmpPot" style="color: var(--primary); font-weight: bold;">-</span>
+              <i class="fa-solid fa-circle-exclamation" style="color: var(--red);"></i> Kelola variabel pengurang gaji aktif untuk member: <span id="lblEmpPot" style="color: var(--text); font-weight: bold;">-</span>
             </div>
 
             <div class="grid" style="gap: 16px;">
@@ -533,7 +577,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
               </div>
               <div class="field">
                 <label><i class="fa-solid fa-percent"></i> PPh 21 (Tarif Efektif Rata-rata / TER)</label>
-                <input id="pph" type="number" readonly style="background:#f8fafc; font-weight: bold; color: var(--red);">
+                <input id="pph" type="number" readonly style="font-weight: bold; color: var(--red);">
               </div>
               <div class="field">
                 <label><i class="fa-solid fa-file-invoice-dollar"></i> Potongan Lain-lain</label>
@@ -667,6 +711,42 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 
 <script>
 const el = function(id) { return document.getElementById(id); };
+
+// Fungsi Toggle Mode Gelap / Terang
+function toggleDarkMode() {
+  let html = document.documentElement;
+  let currentTheme = html.getAttribute('data-theme');
+  let icon = el('themeIcon');
+  let text = el('themeText');
+
+  if(currentTheme === 'dark') {
+    html.removeAttribute('data-theme');
+    localStorage.setItem('payrollku_theme', 'light');
+    if(icon) icon.className = 'fa-solid fa-moon';
+    if(text) text.textContent = 'Gelap';
+    showToast('Mode Terang diaktifkan', 'info');
+  } else {
+    html.setAttribute('data-theme', 'dark');
+    localStorage.setItem('payrollku_theme', 'dark');
+    if(icon) icon.className = 'fa-solid fa-sun';
+    if(text) text.textContent = 'Terang';
+    showToast('Mode Gelap diaktifkan', 'info');
+  }
+}
+
+// Cek Preferensi Tema Tersimpan saat Halaman Dimuat
+document.addEventListener('DOMContentLoaded', function() {
+  let savedTheme = localStorage.getItem('payrollku_theme');
+  if(savedTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    let icon = el('themeIcon');
+    let text = el('themeText');
+    if(icon) icon.className = 'fa-solid fa-sun';
+    if(text) text.textContent = 'Terang';
+  }
+  updateEmployeeSelectors();
+  switchLoginRole('admin');
+});
 
 // Fungsi Bantuan untuk Notifikasi Toast & Loading
 function showToast(message, type = 'success') {
@@ -820,7 +900,6 @@ function saveBulkSalaryAndDeductions() {
     window.data.deductions[nik].potLain = Number(inp.value) || 0;
   });
   window.saveToCloud();
-  loadActiveEmpData();
   showToast('Pengaturan gaji, tunjangan & potongan massal tersimpan!', 'success');
 }
 
@@ -1182,11 +1261,6 @@ function saveAdminCredentials(){
   window.saveToCloud();
   showToast('Pengaturan admin tersimpan!', 'success');
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    updateEmployeeSelectors();
-    switchLoginRole('admin');
-});
 </script>
 </body>
 </html>
