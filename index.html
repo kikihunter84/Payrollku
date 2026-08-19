@@ -320,7 +320,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
           </div>
         </section>
 
-        <!-- MENU PENGATURAN (BARU & MODERN) -->
+        <!-- MENU PENGATURAN -->
         <section id="setting" class="hide admin-section">
           <div class="card" style="border-top: 4px solid var(--primary);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
@@ -362,10 +362,19 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
           </div>
         </section>
 
+        <!-- MENU GAJI (BARU & MODERN) -->
         <section id="gaji" class="hide admin-section">
-          <div class="card">
-            <h2>Pengaturan Gaji, Tarif & Tunjangan Massal</h2>
-            <div class="grid" style="margin-bottom: 20px;">
+          <!-- Kartu Tarif Dasar -->
+          <div class="card" style="border-top: 4px solid var(--blue);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+              <h2 style="margin: 0; border: none; padding: 0;"><i class="fa-solid fa-sliders" style="color: var(--blue);"></i> Pengaturan Tarif & Lembur</h2>
+            </div>
+
+            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; background: var(--bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+              <i class="fa-solid fa-circle-info" style="color: var(--blue);"></i> Tentukan besaran nominal tarif dasar UML, Shift 2, serta indeks lembur (L1 s/d L4) yang berlaku secara global.
+            </div>
+
+            <div class="grid" style="gap: 16px;">
               <div class="field"><label>Tarif UML</label><input id="umlRate" type="number" value="5000"></div>
               <div class="field"><label>Tarif Shift 2</label><input id="shift2Rate" type="number" value="7900"></div>
               <div class="field"><label>Tarif L1</label><input id="rL1" type="number" value="35644"></div>
@@ -373,14 +382,38 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
               <div class="field"><label>Tarif L3</label><input id="rL3" type="number" value="71827"></div>
               <div class="field"><label>Tarif L4</label><input id="rL4" type="number" value="95050"></div>
             </div>
-            <h2>Penghasilan & Potongan Massal</h2>
-            <div class="tablewrap">
-              <table class="gen-table">
-                <thead><tr><th>Nama</th><th>Gapok</th><th>T.M.K.T</th><th>T. Lain</th><th>Pinjaman</th><th>BPJS</th><th>Pot. Lain</th></tr></thead>
+          </div>
+
+          <!-- Kartu Penghasilan & Potongan Massal -->
+          <div class="card" style="border-top: 4px solid var(--green);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+              <h2 style="margin: 0; border: none; padding: 0;"><i class="fa-solid fa-users-gear" style="color: var(--green);"></i> Penghasilan & Potongan Massal</h2>
+            </div>
+
+            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+              Kelola gaji pokok, tunjangan tambahan, serta rincian potongan seluruh karyawan secara langsung dari tabel di bawah ini.
+            </div>
+
+            <div class="tablewrap" style="border-radius: 8px; border: 1px solid var(--border);">
+              <table class="gen-table" style="background: #fff;">
+                <thead>
+                  <tr style="background: #f8fafc; color: var(--text-muted);">
+                    <th style="padding: 12px 10px;">Nama</th>
+                    <th style="padding: 12px 10px;">Gapok</th>
+                    <th style="padding: 12px 10px;">T.M.K.T</th>
+                    <th style="padding: 12px 10px;">T. Lain</th>
+                    <th style="padding: 12px 10px;">Pinjaman</th>
+                    <th style="padding: 12px 10px;">BPJS</th>
+                    <th style="padding: 12px 10px;">Pot. Lain</th>
+                  </tr>
+                </thead>
                 <tbody id="bulkSalaryBody"></tbody>
               </table>
             </div>
-            <div class="row-btn"><button class="btn-primary" onclick="saveBulkSalaryAndDeductions()"><i class="fa-solid fa-save"></i> Simpan Massal ke Cloud</button></div>
+
+            <div class="row-btn" style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px;">
+              <button class="btn-primary" onclick="saveBulkSalaryAndDeductions()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Massal ke Cloud</button>
+            </div>
           </div>
         </section>
 
