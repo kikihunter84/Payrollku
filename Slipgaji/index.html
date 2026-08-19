@@ -163,7 +163,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
       <button id="nGaji" class="admin-menu" onclick="show('gaji')"><i class="fa-solid fa-circle-dollar-to-slot"></i><span>Gaji</span></button>
       <button id="nPotongan" class="admin-menu" onclick="show('potongan')"><i class="fa-solid fa-money-bill-transfer"></i><span>Potongan</span></button>
       <button id="nSlip" onclick="show('slip')"><i class="fa-solid fa-file-invoice"></i><span>Slip Gaji</span></button>
-      <button id="nArsip" class="admin-menu" onclick="show('arsip')"><i class="fa-solid fa-box-archive"></i><span>Arsip</span></button>
+      <button id="nArsip" onclick="show('arsip')"><i class="fa-solid fa-box-archive"></i><span>Arsip</span></button>
       <button onclick="location.reload()"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Keluar</span></button>
     </aside>
 
@@ -272,7 +272,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
           </div>
         </section>
 
-        <section id="arsip" class="hide admin-section">
+        <section id="arsip" class="hide">
           <div class="card">
             <h2>Arsip Riwayat Gaji Periode Lalu</h2>
             <div class="field" style="margin-bottom: 15px;">
@@ -756,6 +756,12 @@ function updateArchiveSelector() {
   let opts = '<option value="">-- Pilih Arsip Periode --</option>';
   keys.forEach(k => {
     let arc = window.data.archives[k];
+    
+    // Saring arsip: jika member yang login, hanya tampilkan arsip miliknya sendiri
+    if (window.data.currentUserRole === 'employee' && arc.empNik !== window.data.activeNik) {
+      return;
+    }
+
     opts += '<option value="' + k + '">' + arc.empName + ' (' + arc.period + ')</option>';
   });
   if(el('archiveSelect')) el('archiveSelect').innerHTML = opts;
