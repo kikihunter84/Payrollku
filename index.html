@@ -91,6 +91,81 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 
 .slip-footer-note { margin-top: 24px; text-align: center; font-size: 11px; color: var(--text-muted); border-top: 1px dashed var(--border); padding-top: 14px; }
 
+/* MODERN TOAST NOTIFICATION */
+#toastContainer {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.toast {
+  background: #ffffff;
+  color: var(--text);
+  padding: 14px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border-left: 5px solid var(--blue);
+  pointer-events: auto;
+  animation: slideInToast 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), fadeOutToast 0.3s ease-in 2.7s forwards;
+  max-width: 320px;
+}
+.toast.success { border-left-color: var(--green); }
+.toast.success i { color: var(--green); font-size: 18px; }
+.toast.error { border-left-color: var(--red); }
+.toast.error i { color: var(--red); font-size: 18px; }
+.toast.info { border-left-color: var(--blue); }
+.toast.info i { color: var(--blue); font-size: 18px; }
+
+@keyframes slideInToast {
+  from { opacity: 0; transform: translateY(30px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes fadeOutToast {
+  to { opacity: 0; transform: translateY(10px) scale(0.95); }
+}
+
+/* FULLSCREEN LOADING OVERLAY */
+#loadingOverlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(4, 30, 66, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  color: #fff;
+  transition: opacity 0.3s ease;
+}
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  animation: spinLoader 0.8s linear infinite;
+}
+@keyframes spinLoader {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+#loadingText {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
 /* STYLING HALAMAN LOGIN BARU YANG MODERN */
 .login-page { 
   min-height: 100vh; 
@@ -156,6 +231,13 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 </style>
 </head>
 <body>
+
+<!-- Kontainer Toast Notifikasi & Loading -->
+<div id="toastContainer"></div>
+<div id="loadingOverlay" class="hide">
+  <div class="spinner"></div>
+  <div id="loadingText">Memproses data ke Cloud...</div>
+</div>
 
 <div id="loginPage" class="login-page">
   <div class="login-card">
@@ -535,17 +617,25 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 
   window.saveToCloud = async function() {
     try {
+      showLoading('Menyimpan perubahan ke Cloud...');
       document.getElementById('cloudStatus').textContent = 'Menyimpan...';
+      
       await setDoc(docRef, window.data);
+      
       document.getElementById('cloudStatus').textContent = '🟢 Terhubung';
+      hideLoading();
+      showToast('Berhasil menyimpan data ke Cloud!', 'success');
     } catch (e) {
       console.error("Gagal simpan ke cloud: ", e);
       document.getElementById('cloudStatus').textContent = '🔴 Gagal';
+      hideLoading();
+      showToast('Gagal menyimpan data ke Cloud!', 'error');
     }
   }
 
   async function initCloudData() {
     try {
+      showLoading('Menghubungkan ke Cloud...');
       let snap = await getDoc(docRef);
       if (snap.exists()) {
         window.data = snap.data();
@@ -557,6 +647,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
       } else {
         await setDoc(docRef, window.defaultData);
       }
+      hideLoading();
       document.getElementById('cloudStatus').textContent = '🟢 Terhubung';
       updateEmployeeSelectors();
       loadActiveEmpData();
@@ -565,7 +656,9 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
       updateArchiveSelector();
     } catch (e) {
       console.error("Gagal ambil data cloud: ", e);
+      hideLoading();
       document.getElementById('cloudStatus').textContent = '⚠️ Offline';
+      showToast('Gagal memuat data dari Cloud (Mode Offline)', 'error');
     }
   }
 
@@ -574,6 +667,35 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 
 <script>
 const el = function(id) { return document.getElementById(id); };
+
+// Fungsi Bantuan untuk Notifikasi Toast & Loading
+function showToast(message, type = 'success') {
+  let container = el('toastContainer');
+  if(!container) return;
+  
+  let iconClass = 'fa-solid fa-circle-check';
+  if(type === 'error') iconClass = 'fa-solid fa-circle-xmark';
+  if(type === 'info') iconClass = 'fa-solid fa-circle-info';
+
+  let toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  toast.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`;
+  
+  container.appendChild(toast);
+  setTimeout(() => { toast.remove(); }, 3000);
+}
+
+function showLoading(text = 'Memproses data...') {
+  let overlay = el('loadingOverlay');
+  let txt = el('loadingText');
+  if(txt) txt.textContent = text;
+  if(overlay) overlay.classList.remove('hide');
+}
+
+function hideLoading() {
+  let overlay = el('loadingOverlay');
+  if(overlay) overlay.classList.add('hide');
+}
 
 const terA = [[5400000,0], [5650000,0.25], [5950000,0.5], [6300000,0.75], [6750000,1], [7150000,1.25], [7600000,1.5], [8050000,1.75], [8450000,2], [8850000,2.25], [9300000,2.5], [9750000,2.75], [10200000,3], [10650000,3.25], [11100000,3.5], [11600000,4], [12350000,5], [13250000,6], [14350000,7], [15600000,8], [17150000,9], [19100000,10], [9999999999,12]];
 const terB = [[6200000,0], [6500000,0.25], [6850000,0.5], [7300000,0.75], [8100000,1], [8650000,1.25], [9200000,1.5], [9700000,1.75], [10400000,2], [11000000,2.25], [11600000,2.5], [12150000,2.75], [12700000,3], [13300000,4], [14050000,5], [14900000,6], [15950000,7], [17250000,8], [18700000,9], [20400000,10], [9999999999,12]];
@@ -699,7 +821,7 @@ function saveBulkSalaryAndDeductions() {
   });
   window.saveToCloud();
   loadActiveEmpData();
-  alert('Pengaturan gaji, tunjangan & potongan massal tersimpan ke Cloud!');
+  showToast('Pengaturan gaji, tunjangan & potongan massal tersimpan!', 'success');
 }
 
 function login(){
@@ -713,6 +835,7 @@ function login(){
       finalizeLogin();
     } else {
       el('loginMsg').textContent = 'Login Admin Salah!';
+      showToast('Login Admin Salah!', 'error');
     }
   } else {
     let nik = el('loginEmpSelect').value;
@@ -724,6 +847,7 @@ function login(){
       finalizeLogin();
     } else {
       el('loginMsg').textContent = 'PIN Member Salah!';
+      showToast('PIN Member Salah!', 'error');
     }
   }
 }
@@ -746,6 +870,7 @@ function finalizeLogin() {
   renderOT();
   calculate();
   updateArchiveSelector();
+  showToast('Berhasil masuk ke sistem!', 'success');
 }
 
 function show(id){
@@ -827,12 +952,13 @@ function readOTInputs(){
  });
 }
 
-function saveOT(){ readOTInputs(); window.saveToCloud(); alert('Data lembur tersimpan ke Cloud!'); }
+function saveOT(){ readOTInputs(); window.saveToCloud(); showToast('Data lembur berhasil disimpan!', 'success'); }
 function resetOT(){
   let emp = getActiveEmp();
   if(confirm('Reset lembur?')){
     if(window.data.ot && window.data.ot[emp.nik]) delete window.data.ot[emp.nik];
     window.saveToCloud(); renderOT();
+    showToast('Data lembur direset.', 'info');
   }
 }
 
@@ -991,7 +1117,7 @@ function archiveCurrentPeriod() {
   };
   
   window.saveToCloud();
-  alert('Slip gaji periode ini berhasil diarsipkan ke Cloud!');
+  showToast('Slip gaji berhasil diarsipkan!', 'success');
   updateArchiveSelector();
 }
 
@@ -1024,7 +1150,7 @@ function saveEmployee(){
   emp.tLain = Number(el('tLain').value) || 0;
   if(el('empPin')) emp.pin = el('empPin').value;
   window.saveToCloud();
-  alert('Member & Tunjangan tersimpan!');
+  showToast('Data member berhasil disimpan!', 'success');
 }
 
 function prepareNewEmployee(){
@@ -1033,15 +1159,19 @@ function prepareNewEmployee(){
   window.data.activeNik = newNik;
   window.saveToCloud();
   loadActiveEmpData();
-  alert('Member baru ditambahkan.');
+  showToast('Member baru ditambahkan.', 'success');
 }
 
 function deleteActiveEmployee(){
-  if(window.data.employees.length <= 1) return alert('Minimal 1 member.');
+  if(window.data.employees.length <= 1) {
+    showToast('Minimal harus ada 1 member!', 'error');
+    return;
+  }
   window.data.employees = window.data.employees.filter(x => x.nik !== window.data.activeNik);
   window.data.activeNik = window.data.employees[0].nik;
   window.saveToCloud();
   loadActiveEmpData();
+  showToast('Member dihapus.', 'info');
 }
 
 function saveAdminCredentials(){
@@ -1050,7 +1180,7 @@ function saveAdminCredentials(){
   window.data.settings.currentShift = Number(el('currentShift').value);
   window.data.settings.nextShift = Number(el('nextShift').value);
   window.saveToCloud();
-  alert('Pengaturan tersimpan.');
+  showToast('Pengaturan admin tersimpan!', 'success');
 }
 
 document.addEventListener('DOMContentLoaded', function() {
