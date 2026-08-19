@@ -211,9 +211,29 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
       <div class="content-wrap">
 
         <section id="dashboard">
+          <div class="card" style="background: linear-gradient(135deg, #041e42 0%, #1a73e8 100%); color: white; border: none;">
+            <h2 style="color: white; border-color: rgba(255,255,255,0.2);">Selamat Datang di PayrollKu</h2>
+            <p style="font-size: 13px; opacity: 0.9; margin: 0;">Sistem manajemen gaji & lembur terintegrasi berbasis Cloud Firestore.</p>
+          </div>
+
+          <div class="grid" style="margin-bottom: 20px;">
+            <div class="card" style="margin-bottom: 0; border-left: 4px solid var(--blue);">
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">STATUS SISTEM</div>
+              <div style="font-size: 16px; font-weight: bold; color: var(--green); margin-top: 6px;"><i class="fa-solid fa-cloud-arrow-up"></i> Online Cloud</div>
+            </div>
+            <div class="card" style="margin-bottom: 0; border-left: 4px solid var(--green);">
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">PERIODE AKTIF</div>
+              <div style="font-size: 15px; font-weight: bold; color: var(--primary); margin-top: 6px;"><i class="fa-regular fa-calendar"></i> 21 Jul - 20 Agu</div>
+            </div>
+          </div>
+
           <div class="card">
-            <h2>Beranda Sistem Cloud</h2>
-            <p id="dashWelcomeText" style="font-size: 13px; color: var(--text-muted);">Data tersimpan secara online di Firebase Cloud Firestore.</p>
+            <h2>Panduan Cepat Penggunaan</h2>
+            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+              <p style="margin-bottom: 8px;"><i class="fa-solid fa-circle-check" style="color: var(--green);"></i> <b>Member:</b> Gunakan menu <b>Lembur</b> untuk mencatat jam lembur harian Anda.</p>
+              <p style="margin-bottom: 8px;"><i class="fa-solid fa-circle-check" style="color: var(--green);"></i> <b>Admin:</b> Kelola data member, tarif, dan potongan massal melalui menu manajemen terkait.</p>
+              <p style="margin-bottom: 0;"><i class="fa-solid fa-circle-check" style="color: var(--green);"></i> <b>Slip Gaji:</b> Cek hasil akhir perhitungan otomatis dan cetak PDF lewat menu <b>Slip Gaji</b>.</p>
+            </div>
           </div>
         </section>
 
