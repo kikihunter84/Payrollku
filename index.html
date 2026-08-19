@@ -62,12 +62,10 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
 
 /* SLIP GAJI STYLE PROFESIONAL */
 .slip-container { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-.slip-brand { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--primary); padding-bottom: 16px; margin-bottom: 20px; }
-.slip-brand-left h3 { margin: 0 0 4px 0; color: var(--primary); font-size: 20px; font-weight: 700; }
-.slip-brand-left p { margin: 0; font-size: 12px; color: var(--text-muted); }
+.slip-brand { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--primary); padding-bottom: 12px; margin-bottom: 16px; }
+.slip-brand-left h3 { margin: 0 0 2px 0; color: var(--primary); font-size: 16px; font-weight: 700; }
 .slip-brand-right { text-align: right; }
-.slip-brand-right h4 { margin: 0 0 4px 0; color: var(--blue); font-size: 16px; font-weight: 600; }
-.slip-brand-right span { font-size: 12px; background: var(--blue-light); color: var(--blue); padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+.slip-brand-right span { font-size: 12px; background: var(--blue-light); color: var(--blue); padding: 4px 10px; border-radius: 6px; font-weight: 600; }
 
 .info-grid-pro { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 20px; font-size: 13px; }
 .info-item { display: flex; flex-direction: column; gap: 2px; }
@@ -427,7 +425,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
           </div>
         </section>
 
-        <!-- MENU POTONGAN (BARU & MODERN) -->
+        <!-- MENU POTONGAN -->
         <section id="potongan" class="hide admin-section">
           <div class="card" style="border-top: 4px solid var(--red);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
@@ -467,7 +465,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
           </div>
         </section>
 
-        <!-- MENU SLIP GAJI (PROFESIONAL & ELEGAN) -->
+        <!-- MENU SLIP GAJI -->
         <section id="slip" class="hide">
           <div class="card" style="padding: 0; background: transparent; border: none; box-shadow: none;">
             
@@ -902,17 +900,16 @@ function calculate(){
       <div class="slip-container">
         <div class="slip-brand">
           <div class="slip-brand-left">
-            <h3><i class="fa-solid fa-file-invoice-dollar" style="color: var(--blue);"></i> PAYROLLKU</h3>
-            <p>Sistem Penggajian & Rekapitulasi Karyawan Resmi</p>
+            <h3>Slip Gaji</h3>
+            <p style="margin: 0; font-size: 12px; color: var(--text-muted);">Sistem Penggajian & Rekapitulasi</p>
           </div>
           <div class="slip-brand-right">
-            <h4>SLIP GAJI RESMI</h4>
             <span>Periode: ${sVal} s/d ${eVal}</span>
           </div>
         </div>
 
         <div class="info-grid-pro">
-          <div class="info-item"><span>Nama Karyawan</span><span>${emp.nama}</span></div>
+          <div class="info-item"><span>Member</span><span>${emp.nama}</span></div>
           <div class="info-item"><span>Nomor Induk (NIK)</span><span>${emp.nik}</span></div>
           <div class="info-item"><span>Status PTKP</span><span>${emp.ptkp || 'TK/0'} (${cat})</span></div>
         </div>
