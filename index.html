@@ -238,22 +238,27 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
         </section>
 
         <section id="karyawan" class="hide admin-section">
-          <div class="card">
-            <h2>Manajemen Member & Tunjangan</h2>
-            <div class="field" style="margin-bottom: 16px;">
-              <label>Pilih Member:</label>
-              <select id="empListSelect" onchange="selectEmployeeForEdit(this.value)" style="font-weight: bold; color: var(--blue);"></select>
+          <div class="card" style="border-top: 4px solid var(--blue);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+              <h2 style="margin: 0; border: none; padding: 0;"><i class="fa-solid fa-id-card"></i> Manajemen Member & Tunjangan</h2>
             </div>
-            <div class="grid">
-              <div class="field"><label>Nama Lengkap</label><input id="nama"></div>
-              <div class="field"><label>ID / NIK</label><input id="nik"></div>
+
+            <div class="field" style="margin-bottom: 20px; background: var(--bg); padding: 14px; border-radius: 8px; border: 1px solid var(--border);">
+              <label style="color: var(--primary); font-size: 13px; margin-bottom: 8px;"><i class="fa-solid fa-user-gear"></i> Pilih Member untuk Diedit:</label>
+              <select id="empListSelect" onchange="selectEmployeeForEdit(this.value)" style="font-weight: bold; color: var(--blue); padding: 12px; background: #fff; font-size: 14px;"></select>
+            </div>
+
+            <div class="grid" style="gap: 16px;">
+              <div class="field"><label>Nama Lengkap</label><input id="nama" placeholder="Nama Karyawan"></div>
+              <div class="field"><label>ID / NIK</label><input id="nik" placeholder="Nomor Induk Karyawan"></div>
               <div class="field"><label>PTKP</label><select id="ptkp"><option>TK/0</option><option>TK/1</option><option>TK/2</option><option>TK/3</option><option>K/0</option><option>K/1</option><option>K/2</option><option>K/3</option></select></div>
-              <div class="field"><label>Gaji Pokok</label><input id="gajiPokok" type="number"></div>
-              <div class="field"><label>T.M.K.T</label><input id="tmkt" type="number"></div>
-              <div class="field"><label>Tunjangan Lain-lain</label><input id="tLain" type="number"></div>
-              <div class="field"><label>PIN Login</label><input id="empPin" type="text"></div>
+              <div class="field"><label>Gaji Pokok</label><input id="gajiPokok" type="number" placeholder="0"></div>
+              <div class="field"><label>T.M.K.T</label><input id="tmkt" type="number" placeholder="0"></div>
+              <div class="field"><label>Tunjangan Lain-lain</label><input id="tLain" type="number" placeholder="0"></div>
+              <div class="field"><label>PIN Login</label><input id="empPin" type="text" placeholder="1234"></div>
             </div>
-            <div class="row-btn">
+
+            <div class="row-btn" style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px;">
               <button class="btn-primary" onclick="saveEmployee()"><i class="fa-solid fa-save"></i> Simpan ke Cloud</button>
               <button class="btn-outline" onclick="prepareNewEmployee()"><i class="fa-solid fa-user-plus"></i> Tambah Baru</button>
               <button class="btn-danger" onclick="deleteActiveEmployee()"><i class="fa-solid fa-trash"></i> Hapus</button>
@@ -261,15 +266,60 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
           </div>
         </section>
 
+        <!-- MENU LEMBUR YANG SUDAH DIPERCANTIK (ELEGAN, SIMPEL, FRIENDLY) -->
         <section id="lembur" class="hide">
-          <div class="card">
-            <h2>Input Jam Lembur (<span id="lblEmpLembur" style="color:var(--blue)">-</span>)</h2>
-            <div class="grid" style="margin-bottom: 16px;">
-              <div class="field"><label>Periode Mulai</label><input id="periodStart" type="date" value="2026-07-21"></div>
-              <div class="field"><label>Periode Selesai</label><input id="periodEnd" type="date" value="2026-08-20"></div>
+          <!-- Kartu Header Ringkasan -->
+          <div class="card" style="background: linear-gradient(135deg, #041e42 0%, #1a73e8 100%); color: white; border: none; box-shadow: 0 4px 15px rgba(26, 115, 232, 0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h2 style="color: white; border: none; margin: 0 0 4px 0; font-size: 20px;"><i class="fa-regular fa-clock"></i> Catatan Lembur Harian</h2>
+                <p style="margin: 0; font-size: 13px; opacity: 0.85;">Input jam lembur dengan mudah dan pantau jadwal shift Anda.</p>
+              </div>
+              <div style="background: rgba(255, 255, 255, 0.15); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; backdrop-filter: blur(5px);">
+                <i class="fa-solid fa-user-tag"></i> <span id="lblEmpLembur">-</span>
+              </div>
             </div>
-            <div class="tablewrap"><table class="gen-table"><thead><tr><th>Tanggal</th><th>Hari</th><th>Jam</th><th>L1</th><th>L2</th><th>L3</th><th>L4</th><th>UML</th><th>Shift</th></tr></thead><tbody id="otBody"></tbody></table></div>
-            <div class="row-btn"><button class="btn-primary" onclick="saveOT()">Simpan Lembur ke Cloud</button><button class="btn-outline" onclick="resetOT()">Reset</button></div>
+          </div>
+
+          <!-- Kartu Pengaturan Periode -->
+          <div class="card">
+            <h3 style="font-size: 15px; color: var(--primary); margin-top: 0; margin-bottom: 12px;"><i class="fa-regular fa-calendar-days" style="color: var(--blue);"></i> Rentang Periode Gaji</h3>
+            <div class="grid" style="gap: 12px;">
+              <div class="field" style="margin-bottom: 0;"><label>Mulai Tanggal</label><input id="periodStart" type="date" value="2026-07-21" style="background: #fafafa; border-radius: 8px;"></div>
+              <div class="field" style="margin-bottom: 0;"><label>Sampai Tanggal</label><input id="periodEnd" type="date" value="2026-08-20" style="background: #fafafa; border-radius: 8px;"></div>
+            </div>
+          </div>
+
+          <!-- Kartu Tabel Input Lembur -->
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h3 style="font-size: 15px; color: var(--primary); margin: 0;"><i class="fa-solid fa-table-list" style="color: var(--blue);"></i> Lembar Kerja Harian</h3>
+              <span style="font-size: 12px; color: var(--text-muted);">Isi kolom jam sesuai kehadiran</span>
+            </div>
+
+            <div class="tablewrap" style="border-radius: 8px; border: 1px solid var(--border);">
+              <table class="gen-table" style="background: #fff;">
+                <thead>
+                  <tr style="background: #f8fafc; color: var(--text-muted);">
+                    <th style="padding: 12px 10px;">Tanggal</th>
+                    <th style="padding: 12px 10px;">Hari</th>
+                    <th style="padding: 12px 10px; text-align: center;">Jam Lembur</th>
+                    <th style="padding: 12px 10px;">L1</th>
+                    <th style="padding: 12px 10px;">L2</th>
+                    <th style="padding: 12px 10px;">L3</th>
+                    <th style="padding: 12px 10px;">L4</th>
+                    <th style="padding: 12px 10px;">UML</th>
+                    <th style="padding: 12px 10px;">Shift</th>
+                  </tr>
+                </thead>
+                <tbody id="otBody"></tbody>
+              </table>
+            </div>
+
+            <div class="row-btn" style="margin-top: 20px; display: flex; gap: 10px;">
+              <button class="btn-primary" onclick="saveOT()" style="flex: 1; padding: 12px; border-radius: 8px; font-size: 14px;"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Lembur</button>
+              <button class="btn-outline" onclick="resetOT()" style="padding: 12px 20px; border-radius: 8px; font-size: 14px;"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+            </div>
           </div>
         </section>
 
@@ -818,7 +868,7 @@ function updateArchiveSelector() {
     let arc = window.data.archives[k];
     opts += '<option value="' + k + '">' + arc.empName + ' (' + arc.period + ')</option>';
   });
-  if(el('archiveSelect')) el('archiveSelect').innerHTML = opts;
+  if(el('archiveSelect')) el('archiveSelect'.value = '') ? el('archiveSelect').innerHTML = opts : el('archiveSelect').innerHTML = opts;
 }
 
 function loadArchive(key) {
