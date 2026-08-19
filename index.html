@@ -266,9 +266,8 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
           </div>
         </section>
 
-        <!-- MENU LEMBUR YANG SUDAH DIPERCANTIK (ELEGAN, SIMPEL, FRIENDLY) -->
+        <!-- MENU LEMBUR (ELEGAN, SIMPEL, FRIENDLY) -->
         <section id="lembur" class="hide">
-          <!-- Kartu Header Ringkasan -->
           <div class="card" style="background: linear-gradient(135deg, #041e42 0%, #1a73e8 100%); color: white; border: none; box-shadow: 0 4px 15px rgba(26, 115, 232, 0.2);">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
               <div>
@@ -281,7 +280,6 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
             </div>
           </div>
 
-          <!-- Kartu Pengaturan Periode -->
           <div class="card">
             <h3 style="font-size: 15px; color: var(--primary); margin-top: 0; margin-bottom: 12px;"><i class="fa-regular fa-calendar-days" style="color: var(--blue);"></i> Rentang Periode Gaji</h3>
             <div class="grid" style="gap: 12px;">
@@ -290,7 +288,6 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
             </div>
           </div>
 
-          <!-- Kartu Tabel Input Lembur -->
           <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
               <h3 style="font-size: 15px; color: var(--primary); margin: 0;"><i class="fa-solid fa-table-list" style="color: var(--blue);"></i> Lembar Kerja Harian</h3>
@@ -323,16 +320,45 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
           </div>
         </section>
 
+        <!-- MENU PENGATURAN (BARU & MODERN) -->
         <section id="setting" class="hide admin-section">
-          <div class="card">
-            <h2>Pengaturan Admin & Shift</h2>
-            <div class="grid">
-              <div class="field"><label>Username Admin</label><input id="admUser"></div>
-              <div class="field"><label>Password Admin</label><input id="admPass" type="password"></div>
-              <div class="field"><label>Shift Minggu Ini</label><select id="currentShift"><option value="2">Shift 2</option><option value="1">Shift 1</option></select></div>
-              <div class="field"><label>Shift Depan</label><select id="nextShift"><option value="1">Shift 1</option><option value="2">Shift 2</option></select></div>
+          <div class="card" style="border-top: 4px solid var(--primary);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+              <h2 style="margin: 0; border: none; padding: 0;"><i class="fa-solid fa-gear" style="color: var(--primary);"></i> Pengaturan Admin & Shift</h2>
             </div>
-            <div class="row-btn"><button class="btn-primary" onclick="saveAdminCredentials()">Simpan Pengaturan ke Cloud</button></div>
+
+            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; background: var(--bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+              <i class="fa-solid fa-shield-halved" style="color: var(--blue);"></i> Kelola kredensial login administrator serta konfigurasi siklus shift mingguan perusahaan.
+            </div>
+
+            <div class="grid" style="gap: 16px;">
+              <div class="field">
+                <label><i class="fa-solid fa-user-shield"></i> Username Admin</label>
+                <input id="admUser" placeholder="Username">
+              </div>
+              <div class="field">
+                <label><i class="fa-solid fa-key"></i> Password Admin</label>
+                <input id="admPass" type="password" placeholder="Sandi baru">
+              </div>
+              <div class="field">
+                <label><i class="fa-regular fa-calendar-days"></i> Shift Minggu Ini</label>
+                <select id="currentShift" style="background: #fff;">
+                  <option value="2">Shift 2</option>
+                  <option value="1">Shift 1</option>
+                </select>
+              </div>
+              <div class="field">
+                <label><i class="fa-regular fa-calendar-plus"></i> Shift Depan</label>
+                <select id="nextShift" style="background: #fff;">
+                  <option value="1">Shift 1</option>
+                  <option value="2">Shift 2</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row-btn" style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px;">
+              <button class="btn-primary" onclick="saveAdminCredentials()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Pengaturan ke Cloud</button>
+            </div>
           </div>
         </section>
 
@@ -868,7 +894,7 @@ function updateArchiveSelector() {
     let arc = window.data.archives[k];
     opts += '<option value="' + k + '">' + arc.empName + ' (' + arc.period + ')</option>';
   });
-  if(el('archiveSelect')) el('archiveSelect'.value = '') ? el('archiveSelect').innerHTML = opts : el('archiveSelect').innerHTML = opts;
+  if(el('archiveSelect')) el('archiveSelect').innerHTML = opts;
 }
 
 function loadArchive(key) {
