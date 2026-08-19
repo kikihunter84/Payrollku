@@ -341,6 +341,7 @@ table.gen-table { width: 100%; border-collapse: collapse; min-width: 700px; }
       if (snap.exists()) {
         window.data = snap.data();
         if(!window.data.archives) window.data.archives = {};
+        // Pastikan properti tmkt dan tLain ada untuk mencegah error data lama
         window.data.employees.forEach(emp => {
           if(emp.tmkt === undefined) emp.tmkt = 0;
           if(emp.tLain === undefined) emp.tLain = 0;
@@ -756,12 +757,6 @@ function updateArchiveSelector() {
   let opts = '<option value="">-- Pilih Arsip Periode --</option>';
   keys.forEach(k => {
     let arc = window.data.archives[k];
-    
-    // Saring arsip: jika member yang login, hanya tampilkan arsip miliknya sendiri
-    if (window.data.currentUserRole === 'employee' && arc.empNik !== window.data.activeNik) {
-      return;
-    }
-
     opts += '<option value="' + k + '">' + arc.empName + ' (' + arc.period + ')</option>';
   });
   if(el('archiveSelect')) el('archiveSelect').innerHTML = opts;
